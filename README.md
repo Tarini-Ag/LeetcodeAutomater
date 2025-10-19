@@ -1,35 +1,49 @@
-# LeetCode Automator (Python)
+# LeetCode Auto Submission Script
 
-- This script automatically:
+This Node.js script automates fetching solved LeetCode problems, retrieves corresponding Java code (via WalkCCC data), and submits solutions directly to LeetCode using your authenticated session.
 
-- Picks a random LeetCode problem number (1–3000)
+## Features
 
-- Fetches its Java solution from WalkCCC
+-  Fetches your solved LeetCode problems using GraphQL
 
-- Extracts the LeetCode URL
+- Skips premium-only & DB-only questions
 
-- Submits the solution to LeetCode using your session & CSRF tokens
+- Extracts Java solutions from merged_output.json
 
-- Logs progress and skipped questions
+- Submits code to LeetCode automatically
+
+- Logs skipped/unsubmitted questions
+
+- Tracks progress in progress.json
+
+## Project Structure
+```
+project/
+├── ok.js             # Your main Node.js script
+├── merged_output.json    # Contains problem info (id, walkcc_url, leetcode_url)
+├── progress.json         # Tracks submitted questions
+├── skipped.log           # Logs skipped/unsubmitted entries
+```
 
 ## Requirements
-
-1. Python Packages
+- Node.js Environment (Make sure Node.js is installed.)
 ```
-pip install requests beautifulsoup4
+node -v
+npm -v
 ```
-
-
-2. LeetCode Authentication Tokens
-
-   To submit code, you must provide:
+- Install Dependencies
 ```
-LEETCODE_SESSION
-
-csrftoken
+npm install fs-extra
 ```
 
-### How to get them (Chrome browser):
+## Update Credentials in Script
+
+Fill in these fields at the top of the file:
+```
+const LEETCODE_SESSION = "<your-session-cookie>";
+const CSRFTOKEN = "<your-csrf-token>";
+```
+#### How to get them (Chrome browser):
 
 - [Install this extension:](https://chromewebstore.google.com/detail/cookie-editor/iphcomljdfghbkdcfndaijbokpgddeno)
 
@@ -38,10 +52,10 @@ csrftoken
 - Open the Cookie Editor
 
 - Copy the values of:
-
-- LEETCODE_SESSION
-
-- csrftoken
+```
+LEETCODE_SESSION
+csrftoken
+```
 
 Paste them into the script here:
 ```
@@ -49,16 +63,26 @@ LEETCODE_SESSION = ""
 CSRFTOKEN = ""
 ```
 
-## How to Run
-python ok.py
 
+## How It Works
+- Constants
+```
+MAX_Q: Total number of questions to iterate (default: 3691)
 
-- Each run will:
+TARGET_SUCCESS: Required success count (1 means first submission victory)
 
-- Try one random question
+MAX_RANDOM_ATTEMPTS: Max retries per question
 
-- Fetch Java solution (if available)
+DELAY_BETWEEN_ATTEMPTS_MS: Delay between submissions
 
-- Submit it to LeetCode
+premiumQues: List of paid-only questions to skip
 
-- Save the result
+dbQues: List of SQL/DB-based questions to skip
+```
+
+## Running the Script
+
+Run the script with Node:
+```
+node script.js
+```
