@@ -195,5 +195,87 @@
             </div>
         </div>
     </footer>
+
+    <style>
+ /* Back to Top button styles (matches site theme: rounded, subtle shadow, prominent CTA color) */
+    .back-to-top {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: linear-gradient(135deg,#ff7a18,#ffb347); /* warm CTA-like gradient */
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+        cursor: pointer;
+        transition: transform .18s ease, opacity .18s ease, visibility .18s;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 9999;
+        border: none;
+    }
+
+    .back-to-top:focus { outline: 3px solid rgba(255,255,255,0.18); }
+
+    .back-to-top.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .back-to-top:hover { transform: translateY(-4px) scale(1.03); }
+
+        /* small responsive tweak */
+        @media (max-width: 600px) {
+            .back-to-top { right: 16px; bottom: 16px; width:48px; height:48px; }
+    }
+    </style>
+    
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">
+        <!-- Up arrow icon -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #fff;">
+            <path d="M6 15l6-6 6 6"></path>
+        </svg>
+    </button>
+
+    <script>
+        // Show/hide back-to-top button and smooth-scroll to top
+        (function () {
+            const btn = document.getElementById('backToTop');
+            const showAfter = 300; // px scrolled before showing
+
+            function onScroll() {
+                if (window.scrollY > showAfter) {
+                    btn.classList.add('show');
+                } else {
+                    btn.classList.remove('show');
+                }
+            }
+
+            // Smooth scroll to top on click
+            btn.addEventListener('click', function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                btn.blur();
+            });
+
+            // keyboard accessibility: Enter/Space triggers click
+            btn.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    btn.click();
+                }
+            });
+
+            // Initialize
+            window.addEventListener('scroll', onScroll, { passive: true });
+            // Run once in case the page is already scrolled
+            onScroll();
+        })();
+    </script>
 </body>
 </html>
