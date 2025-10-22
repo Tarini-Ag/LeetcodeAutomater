@@ -84,5 +84,5 @@ dbQues: List of SQL/DB-based questions to skip
 
 Run the script with Node:
 ```
-node script.js
+node ok.js
 ```
