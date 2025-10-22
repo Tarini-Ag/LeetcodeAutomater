@@ -1,3 +1,19 @@
+// At the very top of ok.js
+const prompt = require('prompt-sync')();
+
+console.log("Welcome to Leetcode Automater!");
+console.log("Please enter your tokens (paste and press Enter).");
+console.log("---------------------------------------------------------");
+
+// Asking user for tokens
+const sessionToken = prompt('Your LeetCode Session Token: ');
+const csrfToken = prompt('Your LeetCode CSRF Token:    ');
+
+console.log("---------------------------------------------------------");
+console.log("Tokens received... starting process...");
+
+// remaining automation code 
+
 const fs = require("fs-extra");
 const path = require("path");
 
