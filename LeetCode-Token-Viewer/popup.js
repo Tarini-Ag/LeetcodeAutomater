@@ -1,7 +1,7 @@
 async function getLeetCodeTokens() {
   try {
     const cookies = await chrome.cookies.getAll({ domain: "leetcode.com" });
-    const session = cookies.find(c => c.name === "LEETCODE_SESSIreON");
+    const session = cookies.find(c => c.name === "LEETCODE_SESSION");
     const csrftoken = cookies.find(c => c.name === "csrftoken");
 
     const tokenBox = document.getElementById("token");
