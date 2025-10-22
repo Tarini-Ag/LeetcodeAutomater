@@ -16,9 +16,16 @@ This Node.js script automates fetching solved LeetCode problems, retrieves corre
 
 - Tracks progress in progress.json
 
-## Project Structure
+- **New:** Chrome Extension to easily fetch LeetCode session and CSRF tokens
+
+
+##New Project Structure
 ```
 project/
+├── LeetCode-Token-Viewer
+    ├── manifest.json
+    ├── popup.html
+    ├── popup.js
 ├── ok.js             # Your main Node.js script
 ├── merged_output.json    # Contains problem info (id, walkcc_url, leetcode_url)
 ├── progress.json         # Tracks submitted questions
@@ -36,6 +43,38 @@ npm -v
 npm install fs-extra
 ```
 
+## LeetCode Token Viewer Chrome Extension
+
+This Chrome Extension helps you fetch your LeetCode session and CSRF tokens locally.
+
+### Features
+
+- Extracts LEETCODE_SESSION and csrftoken from your browser cookies
+
+- Displays tokens in a simple popup
+
+- Lets you copy tokens as a single string (e.g., session:<value>; csrf:<value>)
+
+- Fully local — never sends your tokens anywhere
+
+### Installation
+
+- Open Chrome and go to chrome://extensions.
+
+- Enable Developer mode (toggle in top-right corner).
+
+- Click Load unpacked and select the leetcode-token-viewer folder.
+
+- Pin the extension to the Chrome toolbar for easy access.
+
+### Usage
+
+- Log in to LeetCode.
+
+- Click the LeetCode Token Viewer extension icon.
+
+- Copy the token string displayed:
+
 ## Update Credentials in Script
 
 Fill in these fields at the top of the file:
@@ -43,26 +82,6 @@ Fill in these fields at the top of the file:
 const LEETCODE_SESSION = "<your-session-cookie>";
 const CSRFTOKEN = "<your-csrf-token>";
 ```
-#### How to get them (Chrome browser):
-
-- [Install this extension:](https://chromewebstore.google.com/detail/cookie-editor/iphcomljdfghbkdcfndaijbokpgddeno)
-
-- Log in to https://leetcode.com
-
-- Open the Cookie Editor
-
-- Copy the values of:
-```
-LEETCODE_SESSION
-csrftoken
-```
-
-Paste them into the script here:
-```
-LEETCODE_SESSION = ""
-CSRFTOKEN = ""
-```
-
 
 ## How It Works
 - Constants
