@@ -27,6 +27,10 @@ project/
     ├── popup.html
     ├── popup.js
 ├── ok.js             # Your main Node.js script
+├── website
+    ├── index.css # Styling for the page
+    ├── index.html  # main html structure
+    ├── leet1.jpg   # placeholder image
 ├── merged_output.json    # Contains problem info (id, walkcc_url, leetcode_url)
 ├── progress.json         # Tracks submitted questions
 ├── skipped.log           # Logs skipped/unsubmitted entries
@@ -98,6 +102,12 @@ premiumQues: List of paid-only questions to skip
 
 dbQues: List of SQL/DB-based questions to skip
 ```
+
+## Website elements 
+
+- Home section: Introduces the leetcode automator with a get started button to download the script
+- Features section: Shows what is leetcode automator and how it works
+- How it works section: Gives the 3 links to download the new releases of chrome extensions, desktop application and full project github link 
 
 ## Running the Script
 
