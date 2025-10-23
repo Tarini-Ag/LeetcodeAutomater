@@ -1,4 +1,4 @@
-const fs = require("fs-extra");
+const fs = require("fs");
 const path = require("path");
 const readline = require('readline');
 const mergedData = require('./merged_output.json'); //require loads at compile time ...fs loads in runtime
