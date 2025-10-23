@@ -1,2 +1,5 @@
 node_modules/
-ok.exe
+progress.json
+package-lock.json
+skipped.log
+**/*.exe
