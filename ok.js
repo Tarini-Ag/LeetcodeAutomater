@@ -1,5 +1,6 @@
 const fs = require("fs-extra");
 const path = require("path");
+const mergedData = require('./merged_output.json');
 
 // Configuration
 const CONFIG = {
@@ -13,7 +14,7 @@ const CONFIG = {
 
   PROGRESS_FILE: "progress.json",
   SKIPPED_FILE: "skipped.log",
-  DATA_FILE: "merged_output.json"
+  DATA_FILE: mergedData
 };
 
 const HEADERS = {
@@ -148,28 +149,25 @@ class LeetCodeSubmitter {
   }
 
   // Question data extraction
-  async extractQuestionData(qnum) {
-    try {
-      const filePath = path.join(__dirname, CONFIG.DATA_FILE);
-      const dataRaw = await fs.readFile(filePath, 'utf-8');
-      const data = JSON.parse(dataRaw);
+  async  extractQuestionData(qnum) {
+  try {
+    const data = CONFIG.DATA_FILE; // already parsed JSON
 
-      const problem = data.find(p => p.id === qnum);
-      if (!problem) return [null, null];
+    const problem = data.find(p => p.id === qnum);
+    if (!problem) return [null, null];
 
-      const leetcodeUrl = problem.leetcode_url;
-      const walkccUrl = problem.walkcc_url;
+    const leetcodeUrl = problem.leetcode_url;
+    const walkccUrl = problem.walkcc_url;
 
-      if (!walkccUrl) return [leetcodeUrl, null];
+    if (!walkccUrl) return [leetcodeUrl, null];
 
-      // Fetch Java code
-      const resp = await fetch(walkccUrl, { method: 'GET' });
-      return resp.ok ? [leetcodeUrl, await resp.text()] : [leetcodeUrl, null];
-
-    } catch (e) {
-      return [null, null];
-    }
+    const resp = await fetch(walkccUrl, { method: 'GET' });
+    return resp.ok ? [leetcodeUrl, await resp.text()] : [leetcodeUrl, null];
+  } catch (e) {
+    console.error(e);
+    return [null, null];
   }
+}
 
   // LeetCode submission
   async getQuestionId(slug) {
