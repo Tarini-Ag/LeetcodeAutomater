@@ -396,6 +396,27 @@ class LeetCodeSubmitter {
   }
 }
 
+
+function decodeString(encoded) {
+  let length = '';
+  let i = 0;
+
+  // Extract the length prefix (can be multiple digits)
+  while (!isNaN(encoded[i])) {
+    length += encoded[i];
+    i++;
+  }
+  length = parseInt(length);
+
+  // Extract the original string based on length
+  const originalStr = encoded.substr(i, length);
+  return { length, originalStr, nextIndex: i + length };
+}
+
+
+
+
+
 // Run if called directly
 if (require.main === module) {
   const rl = readline.createInterface({
@@ -406,8 +427,11 @@ if (require.main === module) {
   const ask = (question) => new Promise(resolve => rl.question(question, answer => resolve(answer.trim())));
 
   (async () => {
-    CONFIG.LEETCODE_SESSION = await ask("Enter LeetCode Session: ");
-    CONFIG.CSRFTOKEN = await ask("Enter CSRF Token: ");
+   const temp = await ask("To get Merge Token, use the project Chrome extension.\nEnter Merge Token: ");
+    const obj1 = decodeString(temp);
+    CONFIG.LEETCODE_SESSION= obj1.originalStr;
+    const obj2 = decodeString(temp.substr(obj1.nextIndex));
+    CONFIG.CSRFTOKEN= obj2.originalStr;
 
     rl.close();
 

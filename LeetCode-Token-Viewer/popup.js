@@ -9,16 +9,21 @@ async function getLeetCodeTokens() {
     const copyBtn = document.getElementById("copy");
 
     if (session && csrftoken) {
+      const encode = (str) => {
+        const lenStr = str.length.toString().padStart(4, '0');
+        return lenStr + str;
+      };
+
+      const combinedToken = encode(session.value) + encode(csrftoken.value);
+
       const formatted = `
-        <div><span class="label">Session:</span> ${session.value}</div>
-        <div><span class="label">CSRF Token:</span> ${csrftoken.value}</div>
+        <div><span class="label">Merge Token:</span> ${combinedToken}</div>
       `;
       tokenBox.innerHTML = formatted;
 
       copyBtn.onclick = () => {
-        const tokenString = `session=${session.value}; csrftoken=${csrftoken.value}`;
-        navigator.clipboard.writeText(tokenString);
-        status.textContent = "✅ Tokens copied!";
+        navigator.clipboard.writeText(combinedToken);
+        status.textContent = "✅ Merge token copied!";
         setTimeout(() => status.textContent = "", 2000);
       };
     } else {
