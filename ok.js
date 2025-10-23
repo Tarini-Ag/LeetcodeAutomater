@@ -10,8 +10,7 @@ const CONFIG = {
   MAX_RANDOM_ATTEMPTS: 4,
   DELAY_BETWEEN_ATTEMPTS_MS: 1500,
   OVERALL_ATTEMPT_LIMIT: 2000,
-  MAX_CLOUDFLARE_REJECTIONS: 4,
-  FETCH_TIMEOUT_MS: 10000,
+
   PROGRESS_FILE: "progress.json",
   SKIPPED_FILE: "skipped.log",
   DATA_FILE: "merged_output.json"
@@ -21,8 +20,8 @@ const HEADERS = {
   "Content-Type": "application/json",
   "Origin": "https://leetcode.com",
   "User-Agent": "Mozilla/5.0",
-  "x-csrftoken": CONFIG.CONFIG.CSRFTOKEN,
-  "Cookie": `LEETCODE_SESSION=${CONFIG.CONFIG.LEETCODE_SESSION}; csrftoken=${CONFIG.CONFIG.CSRFTOKEN};`
+  "x-csrftoken": CONFIG.CSRFTOKEN,
+  "Cookie": `LEETCODE_SESSION=${CONFIG.LEETCODE_SESSION}; csrftoken=${CONFIG.CSRFTOKEN};`
 };
 
 // Question filters (would be better to load from external files)
@@ -129,8 +128,8 @@ class LeetCodeSubmitter {
       const data = await this.fetchGraphQL(payload);
       if (!data) break;
 
-    const questions = data?.data?.problemsetQuestionListV2?.questions || [];
-    if (questions.length === 0) break;
+      const questions = data?.data?.problemsetQuestionListV2?.questions || [];
+      if (questions.length === 0) break;
 
       // Add solved questions
       questions
@@ -239,6 +238,7 @@ class LeetCodeSubmitter {
     return null;
   }
 
+  //**********new function */
   buildExcludeSet() {
     // Add premium and database questions
     [...PREMIUM_QUESTIONS, ...DB_QUESTIONS].forEach(q => this.excludeSet.add(String(q)));
@@ -270,7 +270,7 @@ class LeetCodeSubmitter {
 
     let successCount = 0;
     let totalAttempts = 0;
-    const overallAttemptLimit = 2000;
+    const overallAttemptLimit = CONFIG.OVERALL_ATTEMPT_LIMIT;// defined globaly
 
     while (successCount < CONFIG.TARGET_SUCCESS && 
            this.cloudflareRejections < 4 && 
@@ -330,7 +330,7 @@ class LeetCodeSubmitter {
     // Handle blocking
     if ([403, 429].includes(status) || respText.toLowerCase().includes("cloudflare")) {
       this.cloudflareRejections++;
-      console.warn(`🚫 Cloudflare detected (count ${this.cloudflareRejections}/4)`);
+      console.warn(`🚫 Cloudflare detected (count ${this.cloudflareRejections}/4)`);/////////number wanted instead of 4 
       this.logSkip(qnum, `blocked (status ${status})`);
       this.updateProgress(qidStr, false);
       return "BLOCKED";
@@ -338,31 +338,21 @@ class LeetCodeSubmitter {
 
     // Handle submission failure
     if (status !== 200) {
-      console.error(`❌ Submission HTTP status: ${status}`);
-      logSkip(qnum, `HTTP ${status}`);
-      progress[qidStr] = false;
-      saveProgress();
-      await sleep(CONFIG.DELAY_BETWEEN_ATTEMPTS_MS);
-      continue;
+      console.error(`❌ Submission failed with status: ${status}`);
+      this.logSkip(qnum, `HTTP status ${status}`);
+      this.updateProgress(qidStr, false);
+      return "FAILED";
     }
 
     // Check for success
     if (this.isSubmissionSuccessful(respData, respText)) {
       console.log(`\n📝 Solution for #${qnum}:`);
       console.log("=".repeat(50));
-    // Check if submission was successful
-    if (isSubmissionSuccessful(respData)) {
       console.log(code);
       console.log("=".repeat(50));
       console.log(`✅ Submitted successfully for #${qnum}!`);
       this.updateProgress(qidStr, true);
       return "SUCCESS";
-      console.log(`✅ Successfully submitted #${qnum}!`);
-      progress[qidStr] = true;
-      saveProgress();
-      successCount++;
-      excludeSet.add(qidStr);
-      await sleep(CONFIG.DELAY_BETWEEN_ATTEMPTS_MS);
     } else {
       console.error(`❌ Submission failed for #${qnum}`);
       this.logSkip(qnum, "submission failed");
@@ -407,31 +397,5 @@ if (require.main === module) {
     console.error("Unhandled error:", err);
   });
 }
-      console.error(`❌ Submission failed for #${qnum}`);
-      console.error("Response:", JSON.stringify(respData, null, 2));
-      
-      const reason = typeof respData === "object" 
-        ? (respData.error || respData.message || JSON.stringify(respData))
-        : String(respData);
-      
-      logSkip(qnum, `Submission failed: ${reason}`);
-      progress[qidStr] = false;
-      saveProgress();
-      await sleep(CONFIG.DELAY_BETWEEN_ATTEMPTS_MS);
-    }
-  }
-
-  // Final summary
-  console.log("\n======= RUN SUMMARY =======");
-  console.log(`Successes: ${successCount}/${CONFIG.TARGET_SUCCESS}`);
-  console.log(`Total attempts: ${totalAttempts}`);
-  console.log(`Cloudflare rejections: ${cloudflare_rejections}`);
-}
-
-// Run the script
-main().catch(err => {
-  console.error("Fatal error:", err);
-  process.exit(1);
-});
 
 module.exports = LeetCodeSubmitter;
