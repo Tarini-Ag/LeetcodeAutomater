@@ -3,3 +3,4 @@ progress.json
 package-lock.json
 skipped.log
 **/*.exe
+**/*.zip
